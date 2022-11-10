@@ -2,16 +2,16 @@
 
 // CONSTANTS
 const RECIPE_URLS = [
-  'https://introweb.tech/assets/json/1_50-thanksgiving-side-dishes.json',
-  'https://introweb.tech/assets/json/2_roasting-turkey-breast-with-stuffing.json',
-  'https://introweb.tech/assets/json/3_moms-cornbread-stuffing.json',
-  'https://introweb.tech/assets/json/4_50-indulgent-thanksgiving-side-dishes-for-any-holiday-gathering.json',
-  'https://introweb.tech/assets/json/5_healthy-thanksgiving-recipe-crockpot-turkey-breast.json',
-  'https://introweb.tech/assets/json/6_one-pot-thanksgiving-dinner.json',
+  "https://introweb.tech/assets/json/1_50-thanksgiving-side-dishes.json",
+  "https://introweb.tech/assets/json/2_roasting-turkey-breast-with-stuffing.json",
+  "https://introweb.tech/assets/json/3_moms-cornbread-stuffing.json",
+  "https://introweb.tech/assets/json/4_50-indulgent-thanksgiving-side-dishes-for-any-holiday-gathering.json",
+  "https://introweb.tech/assets/json/5_healthy-thanksgiving-recipe-crockpot-turkey-breast.json",
+  "https://introweb.tech/assets/json/6_one-pot-thanksgiving-dinner.json",
 ];
 
 // Run the init() function when the page has loaded
-window.addEventListener('DOMContentLoaded', init);
+window.addEventListener("DOMContentLoaded", init);
 
 // Starts the program, all function calls trace back here
 async function init() {
@@ -53,7 +53,29 @@ function initializeServiceWorker() {
   //            log that it was successful.
   // B5. TODO - In the event that the service worker registration fails, console
   //            log that it has failed.
-  // STEPS B6 ONWARDS WILL BE IN /sw.js
+  const registerServiceWorker = async () => {
+    if ("serviceWorker" in navigator) {
+      try {
+        window.addEventListener("load", async (ev) => {
+          const registration = await navigator.serviceWorker.register(
+            "/sw.js",
+            {
+              scope: "/",
+            }
+          );
+          if (registration.active) {
+            console.log("Service worker has been successfully registered");
+          }
+        });
+      } catch (error) {
+        console.error("The service worker registration failed");
+      }
+    }
+
+    registerServiceWorker();
+
+    // STEPS B6 ONWARDS WILL BE IN /sw.js
+  };
 }
 
 /**
@@ -68,16 +90,24 @@ async function getRecipes() {
   // EXPOSE - START (All expose numbers start with A)
   // A1. TODO - Check local storage to see if there are any recipes.
   //            If there are recipes, return them.
+  let recipe = JSON.parse(localStorage.getItem("recipes"));
+  if (recipe != null) {
+    return recipe;
+  }
   /**************************/
   // The rest of this method will be concerned with requesting the recipes
   // from the network
   // A2. TODO - Create an empty array to hold the recipes that you will fetch
+  let array = [];
+
   // A3. TODO - Return a new Promise. If you are unfamiliar with promises, MDN
   //            has a great article on them. A promise takes one parameter - A
   //            function (we call these callback functions). That function will
   //            take two parameters - resolve, and reject. These are functions
   //            you can call to either resolve the Promise or Reject it.
   /**************************/
+  let myPromise = new Promise(callbackFunc);
+
   // A4-A11 will all be *inside* the callback function we passed to the Promise
   // we're returning
   /**************************/
@@ -100,6 +130,26 @@ async function getRecipes() {
   //            resolve() method.
   // A10. TODO - Log any errors from catch using console.error
   // A11. TODO - Pass any errors to the Promise's reject() function
+
+  const callbackFunc = (resolve, reject) => {
+    RECIPE_URLS.forEach(async (element, index, urls) => {
+      try {
+        const response = await fetch(element);
+        const newRecipe = await response.json();
+        array.push(newRecipe);
+
+        if (index === urls.length - 1) {
+          saveRecipesToStorage(array);
+          resolve(array);
+        }
+      } catch (error) {
+        console.err(error);
+        reject(error);
+      }
+    });
+  };
+
+  return myPromise;
 }
 
 /**
@@ -108,7 +158,7 @@ async function getRecipes() {
  * @param {Array<Object>} recipes An array of recipes
  */
 function saveRecipesToStorage(recipes) {
-  localStorage.setItem('recipes', JSON.stringify(recipes));
+  localStorage.setItem("recipes", JSON.stringify(recipes));
 }
 
 /**
@@ -120,9 +170,9 @@ function saveRecipesToStorage(recipes) {
  */
 function addRecipesToDocument(recipes) {
   if (!recipes) return;
-  let main = document.querySelector('main');
+  let main = document.querySelector("main");
   recipes.forEach((recipe) => {
-    let recipeCard = document.createElement('recipe-card');
+    let recipeCard = document.createElement("recipe-card");
     recipeCard.data = recipe;
     main.append(recipeCard);
   });
