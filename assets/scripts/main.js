@@ -60,7 +60,7 @@ function initializeServiceWorker() {
           const registration = await navigator.serviceWorker.register(
             "./sw.js",
             {
-              scope: "/Lab7/",
+              scope: "/Lab7_Starter/",
             }
           );
           if (registration.active) {
