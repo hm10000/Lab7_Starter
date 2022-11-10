@@ -53,6 +53,7 @@ function initializeServiceWorker() {
   //            log that it was successful.
   // B5. TODO - In the event that the service worker registration fails, console
   //            log that it has failed.
+
   const registerServiceWorker = async () => {
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async (ev) => {
@@ -65,19 +66,17 @@ function initializeServiceWorker() {
           );
           if (registration.active) {
             console.log("Service worker has been successfully registered");
-          } else {
-            console.log("Checking");
           }
         } catch (error) {
           console.error(`The service worker registration failed ${error}`);
         }
       });
     }
-
-    registerServiceWorker();
-
-    // STEPS B6 ONWARDS WILL BE IN /sw.js
   };
+
+  registerServiceWorker();
+
+  // STEPS B6 ONWARDS WILL BE IN /sw.js
 }
 
 /**
