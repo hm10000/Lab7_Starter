@@ -58,7 +58,7 @@ function initializeServiceWorker() {
       try {
         window.addEventListener("load", async (ev) => {
           const registration = await navigator.serviceWorker.register(
-            "/sw.js",
+            "./sw.js",
             {
               scope: "/Lab7/",
             }
