@@ -55,8 +55,8 @@ function initializeServiceWorker() {
   //            log that it has failed.
   const registerServiceWorker = async () => {
     if ("serviceWorker" in navigator) {
-      try {
-        window.addEventListener("load", async (ev) => {
+      window.addEventListener("load", async (ev) => {
+        try {
           const registration = await navigator.serviceWorker.register(
             "./sw.js",
             {
@@ -68,10 +68,10 @@ function initializeServiceWorker() {
           } else {
             console.log("Checking");
           }
-        });
-      } catch (error) {
-        console.error(`The service worker registration failed ${error}`);
-      }
+        } catch (error) {
+          console.error(`The service worker registration failed ${error}`);
+        }
+      });
     }
 
     registerServiceWorker();
