@@ -60,7 +60,7 @@ function initializeServiceWorker() {
           const registration = await navigator.serviceWorker.register(
             "/sw.js",
             {
-              scope: "/",
+              scope: "/Lab7/",
             }
           );
           if (registration.active) {
@@ -68,7 +68,7 @@ function initializeServiceWorker() {
           }
         });
       } catch (error) {
-        console.error("The service worker registration failed");
+        console.error(`The service worker registration failed ${error}`);
       }
     }
 
