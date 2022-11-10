@@ -106,6 +106,25 @@ async function getRecipes() {
   //            take two parameters - resolve, and reject. These are functions
   //            you can call to either resolve the Promise or Reject it.
   /**************************/
+
+  const callbackFunc = (resolve, reject) => {
+    RECIPE_URLS.forEach(async (element, index, urls) => {
+      try {
+        const response = await fetch(element);
+        const newRecipe = await response.json();
+        array.push(newRecipe);
+
+        if (index === urls.length - 1) {
+          saveRecipesToStorage(array);
+          resolve(array);
+        }
+      } catch (error) {
+        console.err(error);
+        reject(error);
+      }
+    });
+  };
+
   let myPromise = new Promise(callbackFunc);
 
   // A4-A11 will all be *inside* the callback function we passed to the Promise
@@ -130,24 +149,6 @@ async function getRecipes() {
   //            resolve() method.
   // A10. TODO - Log any errors from catch using console.error
   // A11. TODO - Pass any errors to the Promise's reject() function
-
-  const callbackFunc = (resolve, reject) => {
-    RECIPE_URLS.forEach(async (element, index, urls) => {
-      try {
-        const response = await fetch(element);
-        const newRecipe = await response.json();
-        array.push(newRecipe);
-
-        if (index === urls.length - 1) {
-          saveRecipesToStorage(array);
-          resolve(array);
-        }
-      } catch (error) {
-        console.err(error);
-        reject(error);
-      }
-    });
-  };
 
   return myPromise;
 }
