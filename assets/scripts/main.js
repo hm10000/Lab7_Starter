@@ -65,6 +65,8 @@ function initializeServiceWorker() {
           );
           if (registration.active) {
             console.log("Service worker has been successfully registered");
+          } else {
+            console.log("Checking");
           }
         });
       } catch (error) {
